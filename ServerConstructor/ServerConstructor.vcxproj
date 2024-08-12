@@ -149,6 +149,8 @@
   <ItemGroup>
     <ClCompile Include="src\javadownloader.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\minecraft.cpp" />
+    <ClCompile Include="src\minecraftspigot.cpp" />
     <ClCompile Include="src\minecraftvanilla.cpp" />
     <ClCompile Include="src\requester.cpp" />
     <ClCompile Include="src\util.cpp" />
@@ -156,6 +158,8 @@
   <ItemGroup>
     <ClInclude Include="src\cfg.h" />
     <ClInclude Include="src\javadownloader.h" />
+    <ClInclude Include="src\minecraft.h" />
+    <ClInclude Include="src\minecraftspigot.h" />
     <ClInclude Include="src\minecraftvanilla.h" />
     <ClInclude Include="src\requester.h" />
     <ClInclude Include="src\util.h" />

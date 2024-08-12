@@ -24,7 +24,7 @@ std::string download_jre(std::string majorVersion) {
 	std::string target = "";
 	for (json manifest : manifest_root) {
 		for (json binary : manifest["binaries"]) {
-			if (binary["os"] == JAVA_OS && binary["image_type"] == "jre" && binary["architecture"] == JAVA_ARCHITECTURE) {
+			if (binary["os"] == JAVA_OS && binary["image_type"] == "jdk" && binary["architecture"] == JAVA_ARCHITECTURE) {
 				target = binary["package"]["link"];
 #ifdef JAVA_DOWNLOADER_DEBUG
 				std::cout << "Found Java version link " << target << std::endl;
