@@ -1,7 +1,8 @@
 #include <string>
 #include <format>
-#include <nlohmann/json.hpp>
 #include <iostream>
+
+#include <nlohmann/json.hpp>
 
 #include "cfg.h"
 #include "util.h"
@@ -18,7 +19,7 @@ std::string download_jre(std::string majorVersion) {
 		return "";
 	}
 
-	json manifest_root = json::parse(http_get(url));
+	json manifest_root = json::parse(http_get(url, REQUEST_RETRY_COUNT));
 
 	std::string target = "";
 
@@ -42,7 +43,7 @@ std::string download_jre(std::string majorVersion) {
 		return "";
 	}
 	std::string java_zip = std::format("{}/java.zip", TMP_DIR);
-	http_get_file(target, java_zip);
+	http_get_file(target, java_zip, 3);
 	#ifdef JAVA_DOWNLOADER_DEBUG
 		std::cout << "Got java.zip, located at " << java_zip << std::endl;
 	#endif

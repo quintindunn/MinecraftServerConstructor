@@ -9,6 +9,8 @@
 #define JAVA_OS "windows"
 #define JAVA_ARCHITECTURE "x64"
 
+#define REQUEST_RETRY_COUNT 3
+
 // #define JAVA_DOWNLOADER_DEBUG
 // #define VANILLA_JAR_DEBUG
 // #define FULLSETUP_DEBUG

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <format>
+#include <filesystem>
 
 using json = nlohmann::json;
 
@@ -19,7 +20,7 @@ typedef struct VanillaVersion VanillaVersion;
 
 namespace Vanilla {
 	json get_versions_manifest() {
-		static std::string manifest_raw = http_get(MINECRAFT_VERSION_MANIFEST);
+		static std::string manifest_raw = http_get(MINECRAFT_VERSION_MANIFEST, REQUEST_RETRY_COUNT);
 		static json manifest = json::parse(manifest_raw);
 		return manifest;
 	}
@@ -66,7 +67,7 @@ namespace Vanilla {
 	}
 
 	std::string get_jar(VanillaVersion version, std::string output_dir, bool download_java = false) {
-		json version_manifest = json::parse(http_get(version.url));
+		json version_manifest = json::parse(http_get(version.url, REQUEST_RETRY_COUNT));
 
 		std::string server_jar_url = version_manifest["downloads"]["server"]["url"];
 		std::string server_jar_sha1 = version_manifest["downloads"]["server"]["sha1"];
@@ -78,7 +79,7 @@ namespace Vanilla {
 #ifdef VANILLA_JAR_DEBUG
 		std::cout << output_dir + "/server.jar" << std::endl;
 #endif
-		http_get_file(server_jar_url, output_dir + "/server.jar");
+		http_get_file(server_jar_url, output_dir + "/server.jar", REQUEST_RETRY_COUNT);
 
 		int javaMajorVersion = version_manifest["javaVersion"]["majorVersion"];
 		return std::to_string(javaMajorVersion);
@@ -123,9 +124,17 @@ namespace Vanilla {
 		}
 		options.java_executable_path = java_executable;
 
-		Vanilla::sign_eula(options.server_path + "/eula.txt");
-		Vanilla::write_start_script(options);
+		sign_eula(options.server_path + "/eula.txt");
+		write_start_script(options);
+		cleanup();
 		return true;
+	}
+
+	void cleanup() {
+		std::error_code errorCode;
+		if (!std::filesystem::remove_all(TMP_DIR, errorCode)) {
+			std::cout << errorCode.message() << std::endl;
+		}
 	}
 
 }

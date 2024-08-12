@@ -41,5 +41,6 @@ namespace Vanilla {
 	bool sign_eula(std::string);
 	bool write_start_script(VanillaOptions);
 	bool fullSetup(VanillaOptions options);
+	void cleanup(void);
 };
 
