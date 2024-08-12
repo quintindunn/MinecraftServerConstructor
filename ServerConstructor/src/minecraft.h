@@ -1,4 +1,5 @@
 #pragma once
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,7 @@ struct MinecraftVersion {
 	std::string time;
 	std::string releaseTime;
 	std::string sha1;
+	std::string javaMajorVersion = "";
 };
 
 namespace Minecraft {
@@ -26,4 +28,5 @@ namespace Minecraft {
 	std::vector<MinecraftVersion> get_versions();
 	MinecraftVersion get_version(std::string);
 	MinecraftVersion get_latest(std::string);
+	std::string get_java_version(MinecraftVersion version);
 };

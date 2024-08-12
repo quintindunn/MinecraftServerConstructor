@@ -1,5 +1,6 @@
-#include <nlohmann/json.hpp>
+#include <string>
 
+#include <nlohmann/json.hpp>
 #include "requester.h"
 #include "minecraft.h"
 
@@ -51,5 +52,10 @@ namespace Minecraft {
 		json manifest = get_versions_manifest();
 		std::string id = manifest["latest"][type];
 		return get_version(id);
+	}
+
+	std::string get_java_version(MinecraftVersion version) {
+		json version_manifest = json::parse(http_get(version.url, REQUEST_RETRY_COUNT));
+		return std::to_string((int) version_manifest["javaVersion"]["majorVersion"]);
 	}
 };

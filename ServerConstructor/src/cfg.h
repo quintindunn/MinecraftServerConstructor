@@ -3,6 +3,8 @@
 #define MINECRAFT_VERSION_MANIFEST "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"
 #define EULA_SIGNATURE "eula=true"
 
+#define SPIGOT_BUILDTOOLS_URL "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
+#define BUILDTOOLS_MAX_RAM 1024
 
 #define TMP_DIR "./temp"
 #define JAVA_ROOT_DIR "./java"
