@@ -1,5 +1,6 @@
 #include <iostream>
 #include "minecraftvanilla.h"
+#include "minecraft.h"
 
 
 int main() {

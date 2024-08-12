@@ -15,59 +15,14 @@
 #include <format>
 #include <filesystem>
 
+#include "minecraft.h"
+
 using json = nlohmann::json;
 
-typedef struct VanillaVersion VanillaVersion;
+typedef struct MinecraftVersion MinecraftVersion;
 
 namespace Vanilla {
-	json get_versions_manifest() {
-		static std::string manifest_raw = http_get(MINECRAFT_VERSION_MANIFEST, REQUEST_RETRY_COUNT);
-		static json manifest = json::parse(manifest_raw);
-		return manifest;
-	}
-
-	std::vector<VanillaVersion> get_versions() {
-		json manifest_versions = get_versions_manifest()["versions"];
-		
-		std::vector<VanillaVersion> versions;
-
-		for (json json_version : manifest_versions) {
-			VanillaVersion version{};
-
-			version.id = json_version["id"];
-			version.url = json_version["url"];
-			version.time = json_version["time"];
-			version.releaseTime = json_version["releaseTime"];
-			version.sha1 = json_version["sha1"];
-
-			std::string type = json_version["type"];
-			if (type == "release") { version.type = VersionType::release; }
-			else if (type == "snapshot") { version.type = VersionType::snapshot; }
-			else if (type == "old_beta") { version.type = VersionType::old_beta; }
-			else if (type == "old_alpha") { version.type = VersionType::old_alpha; }
-			else { version.type = VersionType::UNKNOWN; }
-
-			versions.push_back(version);
-		}
-
-		return versions;
-	}
-
-	VanillaVersion get_version(std::string id) {
-		for (VanillaVersion version : get_versions()) {
-			if (version.id == id) {
-				return version;
-			}
-		}
-	}
-
-	VanillaVersion get_latest(std::string type) {
-		json manifest = get_versions_manifest();
-		std::string id = manifest["latest"][type];
-		return get_version(id);
-	}
-
-	std::string get_jar(VanillaVersion version, std::string output_dir, bool download_java = false) {
+	std::string get_jar(MinecraftVersion version, std::string output_dir, bool download_java = false) {
 		json version_manifest = json::parse(http_get(version.url, REQUEST_RETRY_COUNT));
 
 		std::string server_jar_url = version_manifest["downloads"]["server"]["url"];
@@ -113,7 +68,7 @@ namespace Vanilla {
 	}
 
 	bool fullSetup(VanillaOptions options) {
-		VanillaVersion version = Vanilla::get_version(options.id);
+		MinecraftVersion version = Minecraft::get_version(options.id);
 		std::string java_major_version = Vanilla::get_jar(version, options.server_path, false);
 #ifdef FULLSETUP_DEBUG
 		std::cout << "Java Major Version " << java_major_version << std::endl;

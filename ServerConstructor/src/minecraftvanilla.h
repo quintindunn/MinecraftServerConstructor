@@ -4,24 +4,9 @@
 
 #include <nlohmann/json.hpp>
 
+#include "minecraft.h"
+
 using json = nlohmann::json;
-
-enum VersionType {
-	release,
-	snapshot,
-	old_beta,
-	old_alpha,
-	UNKNOWN,
-};
-
-struct VanillaVersion {
-	std::string id;
-	VersionType type;
-	std::string url;
-	std::string time;
-	std::string releaseTime;
-	std::string sha1;
-};
 
 struct VanillaOptions {
 	std::string id;
@@ -33,11 +18,7 @@ struct VanillaOptions {
 };
 
 namespace Vanilla {
-	json get_versions_manifest();
-	std::vector<VanillaVersion> get_versions();
-	VanillaVersion get_version(std::string);
-	VanillaVersion get_latest(std::string);
-	std::string get_jar(VanillaVersion, std::string, bool);
+	std::string get_jar(MinecraftVersion, std::string, bool);
 	bool sign_eula(std::string);
 	bool write_start_script(VanillaOptions);
 	bool fullSetup(VanillaOptions options);
