@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <filesystem>
+#include <fstream>
 
 #include "minecraftspigot.h"
 #include "minecraft.h"
@@ -46,17 +47,45 @@ namespace Spigot {
 
 	void build_spigot(SpigotOptions options) {
 		std::filesystem::path owd = std::filesystem::current_path();
-
 		std::filesystem::current_path(TMP_DIR);
-		std::string command = std::format("call \".{}bin/java.exe\" -Xmx{}M -Xms{}M -jar BuildTools.jar --rev {}", BUILDTOOLS_MAX_RAM, BUILDTOOLS_MAX_RAM, options.min_allocated_mb, options.id);
-		//std::string result = exec(command);
+		std::string command = std::format("call \".{}\" -Xmx{}M -Xms{}M -jar BuildTools.jar --rev {}", options.java_executable_path, BUILDTOOLS_MAX_RAM, BUILDTOOLS_MAX_RAM, options.id);
+		std::string result = exec(command);
 		std::filesystem::current_path(owd);
+		
+		std::string build_path = std::format("{}/spigot-{}.jar", TMP_DIR, options.id);
+		std::filesystem::rename(build_path, std::format("{}/server.jar", options.server_path));
+	}
 
-		std::cout << owd << std::endl;
-		std::cout << std::format("{}/spigot-{}.jar", TMP_DIR, options.id) << std::endl;
-		std::cout << std::format("../{}/server.jar", options.server_path) << std::endl;
+	bool sign_eula(std::string eula_path) {
+		std::ofstream eula(eula_path);
+		if (eula.is_open()) {
+			eula << EULA_SIGNATURE;
+			eula.close();
+			return true;
+		}
 
-		std::filesystem::rename(std::format("{}/spigot-{}.jar", TMP_DIR, options.id), std::format("{}/server.jar", options.server_path));
+		std::cerr << "Unable to open " << eula_path << std::endl;
+		return false;
+	}
+
+	bool write_start_script(SpigotOptions options) {
+		std::string script_path = std::format("{}/{}", options.server_path, options.start_script_name);
+		std::ofstream script(script_path);
+		if (script.is_open()) {
+			script << std::format("\".{}\" -Xmx{}M -Xms{}M -jar server.jar nogui", options.java_executable_path, options.max_allocated_mb, options.min_allocated_mb);
+			script.close();
+			return true;
+		}
+
+		std::cerr << "Unable to open " << script_path << std::endl;
+		return false;
+	}
+
+	void cleanup() {
+		std::error_code errorCode;
+		if (!std::filesystem::remove_all(TMP_DIR, errorCode)) {
+			std::cout << errorCode.message() << std::endl;
+		}
 	}
 
 	bool fullSetup(SpigotOptions options) {
@@ -78,9 +107,12 @@ namespace Spigot {
 		MinecraftVersion version = Minecraft::get_version(options.id);
 		std::string java_version = Minecraft::get_java_version(version);
 		
-		options.java_executable_path = download_jre(java_version);
+		options.java_executable_path = download_jre(java_version) + "bin/java.exe";
 
 		build_spigot(options);
+		sign_eula(std::format("{}/eula.txt", options.server_path));
+		write_start_script(options);
+		cleanup();
 		return true;
 	}
 };

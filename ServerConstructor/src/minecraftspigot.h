@@ -12,6 +12,8 @@ struct SpigotOptions {
 
 namespace Spigot {
 	void download_buildtools(SpigotOptions);
-
+	bool sign_eula(std::string);
+	bool write_start_script(SpigotOptions);
+	void cleanup();
 	bool fullSetup(SpigotOptions);
 }

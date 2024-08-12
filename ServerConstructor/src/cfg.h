@@ -6,7 +6,7 @@
 #define SPIGOT_BUILDTOOLS_URL "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
 #define BUILDTOOLS_MAX_RAM 1024
 
-#define TMP_DIR "./temp"
+#define TMP_DIR "./tmp"
 #define JAVA_ROOT_DIR "./java"
 #define JAVA_OS "windows"
 #define JAVA_ARCHITECTURE "x64"

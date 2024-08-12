@@ -3,6 +3,17 @@
 #include "minecraftspigot.h"
 #include "minecraft.h"
 
+std::string convertToLowercase(const std::string& str)
+{
+	std::string result = "";
+
+	for (char ch : str) {
+		result += tolower(ch);
+	}
+
+	return result;
+}
+
 void vanilla() {
 	VanillaOptions server_options;
 	std::cout << "Server Version: ";
@@ -33,7 +44,21 @@ void spigot() {
 }
 
 int main() {
-	spigot();
+	std::string architecture;
+	std::cout << "vanilla/spigot: ";
+	std::cin >> architecture;
+
+	architecture = convertToLowercase(architecture);
+
+	if (architecture == "spigot") {
+		spigot();
+	}
+	else if (architecture == "vanilla") {
+		vanilla();
+	}
+	else {
+		std::cout << "Architecture \"" << architecture << "\" not found!";
+	}
 
 	return 0;
 }
