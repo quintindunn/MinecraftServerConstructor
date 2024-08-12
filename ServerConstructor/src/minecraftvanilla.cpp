@@ -1,8 +1,9 @@
 #include "cfg.h"
 
 #include "minecraftvanilla.h"
-#include "requester.h"
+
 #include "util.h"
+#include "requester.h"
 #include "javadownloader.h"
 
 #include <nlohmann/json.hpp>

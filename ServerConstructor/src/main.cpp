@@ -1,6 +1,5 @@
 #include <iostream>
 #include "minecraftvanilla.h"
-#include "javadownloader.h"
 
 
 int main() {

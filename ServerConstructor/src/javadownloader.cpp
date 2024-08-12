@@ -22,7 +22,6 @@ std::string download_jre(std::string majorVersion) {
 	json manifest_root = json::parse(http_get(url, REQUEST_RETRY_COUNT));
 
 	std::string target = "";
-
 	for (json manifest : manifest_root) {
 		for (json binary : manifest["binaries"]) {
 			if (binary["os"] == JAVA_OS && binary["image_type"] == "jre" && binary["architecture"] == JAVA_ARCHITECTURE) {
